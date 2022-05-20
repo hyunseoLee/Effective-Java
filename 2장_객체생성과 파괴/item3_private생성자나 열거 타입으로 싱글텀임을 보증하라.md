@@ -35,9 +35,20 @@
   * 마음이 바뀌면 API를 바꾸지 않고도 싱글턴이 아니게 변경할 수 있다. 
   * 정적 팩터리를 제네릭 싱글턴 팩터리로 만들 수 있다 (아이템 30) 
   * 정적 팩터리의 메서드 참조를 공급자(supplier)로 사용할 수 있다. 
-    * ex. Elvis::getInstance를 Supplier<Elvis>로 사용하는 식이다 ( 아이템43 ,44)
+    * ex. Elvis::getInstance를 Supplier<Elvis>로 사용하는 식이다 ( 아이템43 , 44)
   
+* 1번과 2번으로 만든 싱글턴 클래스를 직렬호 하기위해서는 단순히 Serializable을 구현한다고 선언하는 것만으로 부족하다.
+* 모든 인스턴스 필드를 일시적이라고 선언하고 readResolve 메서드를 제공해야 한다 ( 아이템 89)
 
+  
+```java
+  //싱글텀임을 보장해주는 readResolve 메서드 
+  private Object readResolve(){
+  //'진짜' Elvis를 반환하고, 가짜 Elvis는 가비지 컬렉터에 맡긴다. 
+    return INSTANCE; 
+  }
+```
+  
 ### 3. 원소가 하나인 열거타입을 선언하는 것
   
 ```java
