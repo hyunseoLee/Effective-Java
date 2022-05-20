@@ -96,4 +96,19 @@ public static Boolean valueOf(boolean b) {
     
 ---------------------------------------------------------------------------------------
   ### 아이템2. 생성자에 매개변수가 많다면 빌더를 고려하라
+* 정적 팩터리와 생성자에 선택적 매개변수가 많을 때 
+1. 점층적 생성자 패턴 (telescoping constructor pattern) 
+```java
+// 점층적 생성자 패턴 - 확장하기 어려움
+public class NutritionFacts{
+  private final int servingSize; // (ml, 1회 제공량) 필수
+  private final int servings; // (회, 총 n회 제공량) 필수
+  private final int calories; // (1회 제공량당) 선택
+  private final int fat; // (g/1회 제공량) 선택
+  private fianl int sodium; // (mg/1회 제공량) 선택 
+  private final int carbohydrate; //(g/1회 제공량) 선택 
+}
+```
 
+
+3. 
