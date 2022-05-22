@@ -58,8 +58,24 @@
 4. 입력 객체와 자기 자신의 대으되는 '핵심'필드들이 모두 일치하는지 하나씩 검사한다. 
 5. 대칭적인가? 추이성이 있는가? 일관적인가? 3가지를 자문한다. 
 
+```java
+// 전형적인 equals aptjemdml dP 
+public final class PhoneNumber{
+ private final short areaCode, prefix, lineNum; 
+ 
+ ...
+ 
+ @Override public boolean equals(Object o){
+  if(o==this) return true;
+  if(!(o instanceof PhoneNumber)) return false;
+  PhoneNumber pn = (PhoneNumber)o;
+  return pn.lindNum == lineNum && pn.prefix==prefix && pn.areaCode== ardCode;
+ }
+}
+```
+
 * 어떤 필드를 먼저 비교하느냐가 equals의 성능을 좌우하기도 한다.
-* 다를 간으성이 크거나 비교하는 비용이 싼 피드를 먼저 비교하자. 
+* 다를 가능성 크거나 비교하는 비용이 싼 피드를 먼저 비교하자. 
 
 * equals를 재정의할 땐 hashCode도 반드시 재정의하자 (아이템 11)
 * 너무 복잡하게 해결하려 들지 말자.
@@ -69,6 +85,8 @@
   public boolean equlas(MyClas o){
   }
 ```
+
+* equals,hashCode를 대신 작업해주는 오픈소스 AutoValue 프레임워크를 사용하면 훨씬 편리하다.
 
 >정리
 
