@@ -59,7 +59,7 @@
 5. 대칭적인가? 추이성이 있는가? 일관적인가? 3가지를 자문한다. 
 
 ```java
-// 전형적인 equals aptjemdml dP 
+// 전형적인 equals 메서드의 예 
 public final class PhoneNumber{
  private final short areaCode, prefix, lineNum; 
  
