@@ -3,7 +3,7 @@
  * 열거 타입은 일정 개수의 상수 값을 정의한 다음, 그 외의 값은 허용하지 않는 타입이다. 
  > [열거타입 정리 참조](https://hyun-1200.tistory.com/manage/newpost/93?type=post&returnURL=https%3A%2F%2Fhyun-1200.tistory.com%2Fmanage%2Fposts%2F)
  
- 1. 정수 열거 패턴 기법
+ #### 1. 정수 열거 패턴 기법
  
  ```java
  public static final int APPLE_FUJI = 0;
@@ -26,10 +26,10 @@ ex. 사과용 상수 이름은 모두 APPLE_ 로 시작, 오렌지용 상수는 
   * 상수의 값이 바뀌게되면 다시 컴파일 해야 한다.
 * 문자열로 출력하기 까다롭다.
 
-2. 문자열 열거 패턴 (String enum pattern) 
+#### 2. 문자열 열거 패턴 (String enum pattern) 
 * 상수의 의미를 출력할 수 있다는 점은 좋지만, 문자열 상수 이름대신 문자열 값을 그대로 하드코딩 하게 만들 수 있다. 
 
-3. 열거 타입 (enum type) : 열거패턴의 단점을 보완하고 여러 장점이 있는 대안 
+### 3. 열거 타입 (enum type) : 열거패턴의 단점을 보완하고 여러 장점이 있는 대안 
 
 ```java
 public enum Apple { FUJI, PiPPIN, GRANNY_SMITH }
@@ -49,5 +49,21 @@ public enum Orange { NAVEL, TEMPLE, BLOOD }
 * 열거 타입에는 임의의 메서드나 필드를 추가할 수 있고, 임의의 인터페이스를 구현하게 할 수도 있다. 
   * 열거 타입 상수를 특정 데이터와 연결지으려면 생성자에서 데이터를 받아 인스턴스 필드에 저장하면 된다. 
 * 열거 타입은 열거형의 모든 상수를 배열에 담아 반환하는 values를 제공한다. 
-* values 는 값들을 선언된 
+* values 는 값들을 선언된 순서로 저장하므르ㅗ toString을 사용하기에 편리하다. 
+* 열거 타입의 상수마다 다른 메서드를 수행해야 한다면 switch조건식 대신 추상메서드를 선언하는 **상수별 메서드 구현**을 사용하자.
 
+```java
+public enum Operation{
+ PLUS { public double apply(double x, double y) { return x+y;}
+ MINUS { public double apply(double x, double y) { return x-y; }
+ 
+ public abstract double apply(double x, double y);
+}
+   
+```
+
+* apply 메서드를 재정의하는것을 까먹지 않을 것이고, apply가 추상메서드이므로 재정의하지 않았다면 컴파일 오류로 알려준다. 
+
+단점
+- 상수별 메서드 구현에는 열거 타입 상수끼리 코드를 공유하기 어렵다. 
+- switch문은 
