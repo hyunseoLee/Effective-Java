@@ -39,7 +39,7 @@
 ### 📌 6장. 열거 타입과 애너테이션 
   - [아이템 34. INT 상수 대신 열거 타입을 사용하라](#아이템34-int-상수-대신-열거-타입을-사용하라)
   - [아이템 35. ORDINAL 메서드 대신 인스턴스 필드를 사용하라](#아이템35-ordinal-메서드-대신-인스턴스-필드를-사용하라)
-  - 아이템 36. 비트 필드 대신 ENUMSET을 사용하라 
+  - [아이템 36. 비트 필드 대신 ENUMSET을 사용하라](#아이템36-비트-필드-대신-EnumSet을-사용하라)
   - 아이템 37. ORDINAL 인덱싱 대신 ENUMMAP을 사용하라 
   - 아이템 38. 확장할 수 있는 열거 타입이 필요하면 인터페이스를 사용하라 
   - 아이템 39. 명명 패턴보다 애너테이션을 사용하라 
@@ -864,6 +864,71 @@ public enum Operation{
  
    ----------------------------------------------------------------------------------------------------------------------------
 ## 아이템35. ordinal 메서드 대신 인스턴스 필드를 사용하라 
+
+열거 타입 상수는 열거 타입에서 몇 번째 위치인지를 반환하는 ordinal 메서드를 제공한다.
+다만, 상수 선언의 순서가 바뀌거나 값의 중간이 없는 경우 ordinal을 쓰는 것은 좋지 않다.
+
+해결책으로 열거 타입 상수에 연결된 값은 ordinal 메서드 대신, 인스턴스 필드에 저장하자. 
+
+```java
+// ordinal을 잘못 사용한 예 - 따라하지 말 것 
+public enum Ensemble{
+  SOlO, DUET, TRIO, OCTET,  NONET;
  
+  public int numberOfMusicians() { return ordinal() + 1;  } 
+} 
+
+```
+
+
+```java
+public enum Ensemble{
+  SOlO(1), DUET(2), TRIO(3), OCTET(8), DOUBLE_QUARTET(8), NONET(9);
+  
+  private final int numberOfMusicians;
+  Ensemble(int size) { this.numberOfMusicians= size; }
+  public int numberOfMusicians() { return numberOfMusicians; } 
+} 
+
+```
+
+Enum API문서를 보면 ordinal 메서드는 EnumSet과 EnumMap 같이 열거 타입 기반의 범용 자료구조에 쓸 목적으로 설계되었다.
+따라서 이런 용도가 아니라면 ordinal 메서드는 절대 사용하지 말자. 
    ----------------------------------------------------------------------------------------------------------------------------
+ ## 아이템36. 비트 필드 대신 EnumSet을 사용하라 
  
+ 서로 다른 2의 거듭제곱 값을 할당한 정수 열거 패턴이다.
+ 아래와 같은 식으로 비트별 OR을 사용해 여러 상수를 하나의 집합으로 모을 수 있으며, 이런 집합을 **삐트 필드**라 한다. 
+ ```java
+ public class Text{
+  public static final int STYLE_BOLD = 1 << 0 ; //1
+  public static final int STYLE_ITALIC = 1 << 1 ; //2
+  public static final int STYLE_UNDERLINE = 1 << 2; //4
+  public static final int STYLE_STRIKETHROUGH = 1 << 3; //8
+ 
+  // 매개변수 styles는 0개 이상의 STYLE_ 상수를 비트별 OR한 값이다.
+  public void applyStyles(int styles) { ... } 
+ }
+```
+ 
+ - 비트 필드를 사용하면 비트별 연산을 사용해 합집합,교집합 같은 집합 연산을 효율적으로 수행할 수 있지만,
+ 정수 열거 상수의 단점을 그대로 지닌다.
+ - 또한, 비트 필드값이 그대로 출력되면 단순한 정수 열거 상수를 출력할 때보다 해석하기 훨씬 어렵다.
+ - 최대 몇 비트가 필요한지를 API 작성 시 미리 예측하여 적절한 타입을 선택해야 한다. 
+ 
+ #### 해결책  : EnumSet 클래스
+ - EnumSet 클래스는 열거 타입 상수의 값으로 구성된 집합을 효과적으로 표현해준다.
+ 
+ ```java
+ public class Text{
+  public enum Style {BOLD, ITALIC, UNDERLINE, STRIKETHROUGH }
+ 
+ // 어떤 Set을 넘겨도 되나, EnumSet이 가장 좋다.
+ public void applyStyles(Set<Style> styles) { ... }
+ }
+ ```
+ 
+ > 정리
+
+
+   ----------------------------------------------------------------------------------------------------------------------------
