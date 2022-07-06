@@ -12,7 +12,8 @@
     public void leaveTheBuilding(){...}
   } 
 ```
-- private 생성자는 pulic static final 필드인 Elvis.INSTANCE를 초기화할 때 딱 한번만 호출된다.
+- 생성자를 private으로 감춰두고, 유일한 인스턴스에 접근할 수 있는 수단으로 public static 멤버를 마련한다. 
+- private 생성자는 pulic static final 필드인 E lvis.INSTANCE를 초기화할 때 딱 한번만 호출된다.
 - public 이나 protected 생성자가 없으므로 Elvis 클래스가 초기화될 때 만들어진 인스턴스가 전체 시스템에서 하나뿐임이 보장된다.
 - 장점 
   - 클래스가 싱글턴임이 API에 명백히 드러난다. public static 필드가 final이니 절대로 다른 객체를 참조할 수 없다.
@@ -37,7 +38,7 @@
   * 정적 팩터리의 메서드 참조를 공급자(supplier)로 사용할 수 있다. 
     * ex. Elvis::getInstance를 Supplier<Elvis>로 사용하는 식이다 ( 아이템43 , 44)
   
-* 1번과 2번으로 만든 싱글턴 클래스를 직렬호 하기위해서는 단순히 Serializable을 구현한다고 선언하는 것만으로 부족하다.
+* 1번과 2번으로 만든 싱글턴 클래스를 직렬화 하기위해서는 단순히 Serializable을 구현한다고 선언하는 것만으로 부족하다.
 * 모든 인스턴스 필드를 일시적이라고 선언하고 readResolve 메서드를 제공해야 한다 ( 아이템 89)
 
   
