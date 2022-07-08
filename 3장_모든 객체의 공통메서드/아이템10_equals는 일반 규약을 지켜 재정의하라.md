@@ -37,17 +37,41 @@
 ### <equals 메서드 재정의할 때 규약>
 * equals 메서드는 동치관계를 구현하며, 다음을 만족한다. 
     - **동치관계** : 집합을 서로 같은 원소들로 이뤄진 부분집합으로 나누는 연산 
-* 반사성(reflexivity): null이 아닌 모든 참조 값 x에 대해, x.equals(x)= true 이다.
+1. 반사성(reflexivity): null이 아닌 모든 참조 값 x에 대해, x.equals(x)= true 이다.
   - 객체는 자기 자신과 같아야 한다.
-* 대칭성(symmetry): null이 아닌 모든 참조 값 x,y에 대해, x.equals(y)= true 이면 y.equals(x)= true 이다.
+2. 대칭성(symmetry): null이 아닌 모든 참조 값 x,y에 대해, x.equals(y)= true 이면 y.equals(x)= true 이다.
   - 두 객체는 서로에 대한 동치여부에 똑같이 답해야 한다.
-* 추이성(transitivity) : null이 아닌 모든 참조값 x,y,z에 대해, x.equlas(y)= true이고, y.equals(z)= true이면 x.equlas(z)= true 이다.
-   - ✅(다시) 상위클래스에 없는 새로운 필드를 하위 클래서에 추가해야 하는 상황 
-   - ✅(다시) 대칭성과 추이성 위배하는 예시 - 다시보기 이해안됨(p.57-59)
-   - ✅(다시) 리스코프 치환원칙 : 어떤 타입에 있어 중요한 속성이라면 그 하위 타입ㅂ에서도 마찬가지로 중요하다.  
-* 일관성(consistency) : null이 아닌 모든 참조 값 x,y에 대해, x.equals(y)를 반복해서 호출하면 항상 true를 반환하거나 항상 false를 반환한다.
-  - 두 객첵 같다면 (수정되지 않는 한) 앞으로도 영원히 같아야 한다. 
-* null-아님 : null이 아닌 모든 참조 값 x에 대해, x.equlas(null)은 false이다.
+3. 추이성(transitivity) : null이 아닌 모든 참조값 x,y,z에 대해, x.equlas(y)= true이고, y.equals(z)= true이면 x.equlas(z)= true 이다.
+   - 상위클래스에 없는 새로운 필드를 하위 클래서에 추가해야 하는 상황 
+   - 구체 클래스를 확장해 새로우 값을 추가하면서 equals 규약을 만족시킬 방법은 존재하지 않는다.
+      - 상속 대신 컴포지션을 사용하면 괜찮은 우회방법이다. 
+
+```java
+public class ColorPoint{
+  private final Point point;
+  private final Color color;
+  
+  public ColorPoint(int x, int y, Color color){
+    point = new Point(x,y);
+    this.color = Objects.requireNonNull(color);
+  }
+  
+  /* 이 ColorPoint의 Point 뷰를 반환한다. */
+  public Point asPoint(){
+    return point;
+  }
+  
+  @Override public boolean eqauls(Object o){
+    if(!(o instanceof ColorPoint)) return false;
+    ColorPoint cp = (ColorPoint) o;
+    return cp.point.eqauls(point) && cp.color.equals(color); 
+  }
+}
+```
+   - 리스코프 치환원칙 : 어떤 타입에 있어 중요한 속성이라면 그 하위 타입ㅂ에서도 마찬가지로 중요하다.  
+4. 일관성(consistency) : null이 아닌 모든 참조 값 x,y에 대해, x.equals(y)를 반복해서 호출하면 항상 true를 반환하거나 항상 false를 반환한다.
+  - 두 객체가 같다면 (수정되지 않는 한) 앞으로도 영원히 같아야 한다. 
+5. null-아님 : null이 아닌 모든 참조 값 x에 대해, x.equlas(null)은 false이다.
 
 
 ### equals 메서드 구현 방법
@@ -66,7 +90,7 @@ public final class PhoneNumber{
  ...
  
  @Override public boolean equals(Object o){
-  if(o==this) return true;
+  if(o==this) return true; // ==연산자르 사용해 입력이 자기 자신의 참조인지 확인한다. 
   if(!(o instanceof PhoneNumber)) return false;
   PhoneNumber pn = (PhoneNumber)o;
   return pn.lindNum == lineNum && pn.prefix==prefix && pn.areaCode== ardCode;
@@ -76,7 +100,7 @@ public final class PhoneNumber{
 
 * 어떤 필드를 먼저 비교하느냐가 equals의 성능을 좌우하기도 한다.
 * 다를 가능성 크거나 비교하는 비용이 싼 피드를 먼저 비교하자. 
-
+* equals를 다 구현했다몀ㄴ, 대칭적인가? 추이성이있는가? 일관적인가? 세가지르 자문하고, 단위테스트를 작성해 돌려보자. 
 * equals를 재정의할 땐 hashCode도 반드시 재정의하자 (아이템 11)
 * 너무 복잡하게 해결하려 들지 말자.
 * Object 외의 타입을 매개변수로 받는 equals 메서드는 선언하지 말자.
